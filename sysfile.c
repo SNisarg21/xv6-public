@@ -445,6 +445,6 @@ sys_pipe(void)
 
 int sys_hello(void)
 {
-	cprintf("hello\n");
+	cprintf("hello world\n");
 	return 0;
 }
