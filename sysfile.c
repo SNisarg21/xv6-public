@@ -442,3 +442,100 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+int sys_hello(void)
+{
+	cprintf("hello world\n");
+	return 0;
+}
+
+int
+sys_lseek(void)
+{
+  struct file *f;
+  int fd;
+  int whence;
+  uint off;
+
+  if(argfd(0, &fd, &f) < 0 || argint(1, (int*)&off) < 0 || argint(2, &whence) < 0)
+    return -1;
+	//int d = argint(2 , &whence);
+  /*switch(d){
+  case 2:
+    f->off = off;
+    break;
+
+  case 1:
+    f->off += off;
+    break;
+
+  case 3:
+    if(f->ip->type == FD_PIPE || f->ip->type == T_DEV){
+      return -1;
+    }
+    f->off = f->ip->size + off;
+    break;
+
+  default:
+    return -1;
+  }*/
+  
+//  cprintf("%d" , whence);
+ // cprintf("%d" , off);
+ // cprintf("%d" , f->off);
+  //cprintf("%d" , f->ip->size);
+ 
+  if(off > 0 ){
+  	if(whence==2){
+  		f->off = 0;
+  		//return f->off;
+  	}
+  	else if(whence==1){
+  		f->off = f->off  + off;
+  		if(f->off < 0){
+  			f->off = 0;
+  			//return f->off;
+  		}
+  	}
+  	else if(whence==3){
+  		f->off = f->ip->size  + off;
+  		if(f->off < 0){
+  			f->off = 0;
+  			//return f->off;
+  		} 
+  	}
+  }
+  else{
+	if(whence==2){
+  		if(off > f->ip->size){
+  			f->off = f->ip->size;
+  			//return f->off;
+  		}
+  		else{
+  			f->off = off;
+  		}
+  	}
+  	else if(whence==1){
+  		//f->off = f->off  + off;
+  		if(f->off + off > f->ip->size){
+  			f->off = f->ip->size;
+                        //cprintf("Hello");
+  		}
+		else{
+			f->off = f->off + off;
+		}
+  	}
+  	else if(whence==3){
+  		f->off = f->ip->size  + off;
+  		if(f->off > f->ip->size){
+  			f->off = f->ip->size;
+  		} 
+  	}	
+  }
+  
+  if(f->off > f->ip->size){
+	f->off = f->ip->size;
+   }
+  return f->off;
+}
+
+
